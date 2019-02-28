@@ -1,0 +1,237 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<title>Add Product</title>
+<style>
+    .navbar
+     {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+        background:#173F5F;
+        color: #f2f2f2;
+    }
+
+    input[type=search] 
+    {
+        background: #206398 url(http://hp-proliant.co.uk/qual_images/mob-search-icon.png) no-repeat 9px center;
+        border: solid 1px #ccc;
+        border-radius: 50px;
+        padding: 6.2px 8px 6.2px 26px;
+        width: 55px;
+        color:whitesmoke;
+    }
+    input[type=search]:focus
+    {
+        width: 250px;
+        background-color: #ccc;
+        border-color: #333;
+        border: solid 1px #fff;
+    }
+
+    #logout,#options,#addproduct
+    {
+        border-radius: 50px;
+        background-color: #206398;
+        color:whitesmoke;
+        width: 80px;
+    }
+    #addproduct
+    {
+        border-radius: 50px;
+        background-color: #206398;
+        color:whitesmoke;
+    }
+    .nav-item,.searchform
+    {
+        margin-left: 15px;
+    }
+    .searchform
+    {
+        margin-left: 40px;
+    }
+
+    #adminprofile
+    {
+        text-align:left;
+        padding:5px;
+        background-color: #173F5F;
+        color:#206398;
+    }
+    #adminname
+    {
+        padding-top: 10px;
+        color: #206398
+    }
+    .card-body.h6 + .card.body.p
+    {
+        margin-top:-20px;
+    }
+    #productform
+    {
+        margin-left: 20px;
+    }
+    </style>
+  </head>
+  <body>
+   <%@ page import="com.roshan.Product" %>
+ <%@ page import="com.roshan.User" %>
+<%
+
+String userid=(String)session.getAttribute("userid");
+
+if(userid==null)
+{
+	  RequestDispatcher rd = request.getRequestDispatcher("Login.jsp");
+	  rd.forward(request, response);
+}
+
+%> 
+<% 
+	User user=(User)session.getAttribute("User");
+%>
+    <nav class="navbar navbar-expand-lg ">
+        <a class="navbar-brand" href="Welcome.jsp">GRIZZLY STORE</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <form class="form-inline searchform">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        </form>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active ml-auto">
+              <a class="nav-link" href="#"><span class="fa fa-bell"><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Welcome  <%= user.getUserName() %></a>
+            </li>
+            <li class="nav-item">
+             <form action="logout" method="post"><button class="nav-link btn" type="submit" id="logout">Logout</button></form>
+            </li>            
+          </ul>
+        </div>
+      </nav>
+<br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div card-header>
+                            <p id="adminprofile">
+                                <a href="#"><b>PROFILE</b></a>
+                                <span style="float:right;"><a href="#"><b>Edit</b></a></span>
+                            </p>                            
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="http://localhost:8080/grizzly-store-admin-webb/images/<%= user.getUserImage() %>" class="rounded mx-auto d-block" alt="Admin Photo">
+                            <h5 id="adminname"><b><%= user.getUserName() %></b></h5><br>
+                            <h6>ID</h6>
+                            <p><%= user.getUserId() %></p><br>
+                            <h6>DESIGNATION</h6>
+                            <p><%= user.getUserDesignation() %></p><br>
+                            <h6>OFFICE</h6>
+                            <p><%= user.getUserAddress() %></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-product-tab" data-toggle="tab" href="#nav-product" role="tab" aria-controls="nav-product" aria-selected="true"><b>Product</b></a>
+                            <a class="nav-item nav-link" id="nav-vendor-tab" data-toggle="tab" href="#nav-vendor" role="tab" aria-controls="nav-vendor" aria-selected="false"><b>Vendor</b></a>                           
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-product" role="tabpanel" aria-labelledby="nav-product-tab">
+                        <div class="card-body">
+                            <form class="form row" action="AddProduct" method="post">
+                            	<div class"col-md-12">
+                            		<%
+                            			String msg=(String)session.getAttribute("Msg3");
+                            			if(msg!=null)
+                            			{
+                            				out.println("<label>"+msg+"<label>");
+                            			}
+                            		%>
+                            	</div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Image 1:</label>
+                                        <input type="file" class="form-control-file" name="image1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Image 2:</label>
+                                        <input type="file" class="form-control-file" name="image2" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Image 3:</label>
+                                        <input type="file" class="form-control-file" name="image3" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Image 4:</label>
+                                        <input type="file" class="form-control-file" name="image4" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Image 5:</label>
+                                        <input type="file" class="form-control-file" name="image5" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Product ID:</label>
+                                        <input type="text" name="product_id" class="form-control" placeholder="Product ID" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Product CATEGORY:</label>
+                                        <select placeholder="Category" name="product_category" class="form-control">
+                                            <option selected>Category</option>
+                                            <option>Mens</option>
+                                            <option>Womens</option>
+                                            <option>Kids</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Product NAME:</label>    
+                                        <input type="text" name="product_name" class="form-control" placeholder="Product NAME" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Product DESCRIPTION:</label>
+                                        <input type="text" name="product_desc" class="form-control" placeholder="Product DESCRIPTION" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Product PRICE:</label>
+                                        <input type="number" name="product_price" class="form-control" placeholder="Product PRICE" required>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-12" style="text-align:right;">
+                                    <button type="submit" class="btn" id="addproduct">Add</button>
+                                    <a class="btn" id="addproduct" href="Welcome.jsp">Cancel</a>
+                                </div>
+                            </form>
+                        </div>                                 
+                    </div>
+                    <div class="tab-pane fade" id="nav-vendor" role="tabpanel" aria-labelledby="nav-vendor-tab">vendor</div>                    
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </section>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
